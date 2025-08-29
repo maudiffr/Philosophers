@@ -20,6 +20,9 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+/* Represents a single philosopher at the table.
+   Stores its ID, thread, left and right forks, and a reference to shared variables. */
+
 typedef struct s_Philo
 {
 	int				id;
@@ -28,6 +31,10 @@ typedef struct s_Philo
 	pthread_mutex_t	*mutex_rf;
 	struct s_Var	*var;
 }	t_Philo;
+
+/* Stores shared data for the simulation.
+   Keeps track of number of philosophers, timing rules, meal counters,
+   mutexes for synchronization, start time, and last meal times. */
 
 typedef struct s_Var
 {

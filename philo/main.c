@@ -12,6 +12,10 @@
 
 #include "philosophers.h"
 
+/* Frees all resources used by the program.
+   This function destroys every mutex (global and per-philosopher),
+   then frees the allocated memory for tracking meals and philosophers. */
+
 void	ft_end(t_Var *var, t_Philo *phi)
 {
 	int	i;
@@ -29,6 +33,11 @@ void	ft_end(t_Var *var, t_Philo *phi)
 	free(var->last_meal);
 	free(phi);
 }
+
+/* Program entry point.
+   Checks the validity of arguments, initializes simulation variables,
+   and starts the dining philosophers simulation.
+   Returns 1 if an error occurs, 0 otherwise. */
 
 int	main(int argc, char **argv)
 {

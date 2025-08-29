@@ -12,6 +12,10 @@
 
 #include "philosophers.h"
 
+/* Returns the current time in milliseconds.
+   Uses gettimeofday to fetch the current time
+   and converts seconds + microseconds into ms. */
+
 size_t	get_current_time(void)
 {
 	struct timeval	time;
@@ -20,6 +24,11 @@ size_t	get_current_time(void)
 		return (1);
 	return ((time.tv_sec * 1000) + (time.tv_usec) / 1000);
 }
+
+/* Implements a custom sleep function with millisecond precision.
+   It records the starting time, then loops until the elapsed time
+   reaches the requested duration. The loop uses small usleep slices
+   (500 µs) to avoid busy waiting and reduce CPU usage. */
 
 int	ft_usleep(size_t time_in_ms)
 {
@@ -30,6 +39,9 @@ int	ft_usleep(size_t time_in_ms)
 		usleep(500);
 	return (0);
 }
+
+/* Computes the time difference in milliseconds between
+   a given starting point (start) and the current time. */
 
 long	int	t_diff(struct timeval *start)
 {
@@ -42,6 +54,11 @@ long	int	t_diff(struct timeval *start)
 	diff_usec = (current.tv_usec - start->tv_usec) / 1000;
 	return (diff_sec + diff_usec);
 }
+
+/* Surveillance thread: constantly monitors the philosophers.
+   - If the meal counter reaches zero, the simulation ends.
+   - If any philosopher exceeds "t_die" without eating,
+     the system reports the death and stops the simulation. */
 
 void	*surveillance(t_Var *var)
 {

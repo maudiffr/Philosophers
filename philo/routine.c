@@ -12,6 +12,14 @@
 
 #include "philosophers.h"
 
+/* The eating function represents a philosopher taking their turn to eat.
+   It first locks the eating and check mutexes to ensure exclusive access
+   to shared variables. If the simulation has ended (keeper is set) or
+   there are no meals left, the philosopher releases the forks and exits.
+   Otherwise, it records the current time as the last meal, prints messages
+   for taking forks and eating, decrements the remaining meal counter,
+   and then sleeps for the eating duration. */
+
 int	eating(t_Philo *phi)
 {
 	pthread_mutex_lock(&phi->var->mutex_eat);
@@ -37,6 +45,12 @@ int	eating(t_Philo *phi)
 	return (0);
 }
 
+/* The sleeping function models a philosopher resting after eating.
+   It releases both forks first, then locks the sleep and check mutexes
+   to safely check simulation state. If the simulation has ended, it
+   immediately returns. Otherwise, it prints a message indicating the
+   philosopher is sleeping and waits for the sleep duration. */
+
 int	sleeping(t_Philo *phi)
 {
 	put_forks_back(phi);
@@ -56,6 +70,12 @@ int	sleeping(t_Philo *phi)
 	return (0);
 }
 
+/* The thinking function represents a philosopher contemplating
+   between meals. It locks the thinking and check mutexes to safely
+   access shared variables. If the simulation has ended, it returns
+   immediately. Otherwise, it prints a message that the philosopher
+   is thinking. */
+
 int	thinking(t_Philo *phi)
 {
 	pthread_mutex_lock(&phi->var->mutex_think);
@@ -72,6 +92,14 @@ int	thinking(t_Philo *phi)
 	pthread_mutex_unlock(&phi->var->mutex_think);
 	return (0);
 }
+
+/* The routine function defines the lifecycle of each philosopher thread.
+   If there is only one philosopher, it waits until the philosopher dies
+   because eating is impossible. For even-numbered philosophers, it
+   waits half the eating time at the start to reduce simultaneous fork
+   contention. Then, the philosopher continuously loops through taking
+   forks, eating, sleeping, and thinking. The loop exits when the
+   simulation ends or when all meals are consumed. */
 
 void	*routine(t_Philo *phi)
 {

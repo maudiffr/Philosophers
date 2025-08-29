@@ -12,6 +12,9 @@
 
 #include "philosophers.h"
 
+/* Initializes the main mutexes used to protect shared resources:
+   eat, sleep, think, and a global check mutex. */
+
 static	void	ft_mutex_init(t_Var *var)
 {
 	pthread_mutex_init(&var->mutex_eat, NULL);
@@ -19,6 +22,11 @@ static	void	ft_mutex_init(t_Var *var)
 	pthread_mutex_init(&var->mutex_think, NULL);
 	pthread_mutex_init(&var->mutex_check, NULL);
 }
+
+/* Thread entry point.
+   If the ID corresponds to the extra monitoring thread,
+   it launches the surveillance function.
+   Otherwise, it starts the philosopher routine. */
 
 static	void	*distrib(void *arg)
 {
@@ -31,6 +39,10 @@ static	void	*distrib(void *arg)
 		routine(phi);
 	return (0);
 }
+
+/* Allocates memory for tracking each philosopher's last meal.
+   Initializes the timestamps and sets up mutexes.
+   Returns 1 on failure, 0 on success. */
 
 static	int	ft_malloc(t_Var *var)
 {
@@ -53,6 +65,12 @@ static	int	ft_malloc(t_Var *var)
 	return (0);
 }
 
+/* Initializes philosopher structures.
+   Each philosopher gets an ID, a pointer to the shared variables,
+   and a left fork (own mutex).
+   The right fork is the left fork of the next philosopher,
+   forming a circular arrangement. */
+
 static	void	ft_forks_init(t_Philo *philo, t_Var *var)
 {
 	int	i;
@@ -72,6 +90,11 @@ static	void	ft_forks_init(t_Philo *philo, t_Var *var)
 	philo[i].id = i + 1;
 	philo[i].var = var;
 }
+
+/* Main initialization routine.
+   Allocates memory, sets up philosophers and forks,
+   creates one thread per philosopher plus an extra surveillance thread,
+   and waits for all threads to finish before cleanup. */
 
 int	init(t_Var *var)
 {

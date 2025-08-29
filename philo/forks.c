@@ -12,11 +12,18 @@
 
 #include "philosophers.h"
 
+/* Locks both forks for the philosopher:
+   first the left fork (own mutex),
+   then the right fork (neighbor's left fork). */
+
 void	taking_forks(t_Philo *phi)
 {
 	pthread_mutex_lock(&phi->mutex_lf);
 	pthread_mutex_lock(phi->mutex_rf);
 }
+
+/* Unlocks both forks after eating,
+   first the right fork, then the left fork. */
 
 void	put_forks_back(t_Philo *phi)
 {

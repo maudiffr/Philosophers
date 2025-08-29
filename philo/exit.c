@@ -12,6 +12,10 @@
 
 #include "philosophers.h"
 
+/* Prints an explanatory message when the program encounters an error.
+   It tells the user what went wrong so they know why the program cannot
+   continue. */
+
 void	ft_exit(int error)
 {
 	if (error == 1)
